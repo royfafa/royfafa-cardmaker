@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>로이파파 카드메이커</title>
+<meta name="description" content="스마트폰에서 바로 만드는 인스타그램 카드뉴스 · 9:16 숏폼 영상 제작 도구" />
+<meta name="theme-color" content="#0a0c0b" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app" id="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">ㄹ</span>
+      <span class="brand-text">
+        <strong>로이파파 카드메이커</strong>
+        <small>카드뉴스 · 숏폼 스튜디오</small>
+      </span>
+    </div>
+    <nav class="top-tabs" aria-label="화면 전환">
+      <button type="button" class="tab-btn is-active" data-tab="workspace">작업실</button>
+      <button type="button" class="tab-btn" data-tab="storage">저장함</button>
+      <button type="button" class="tab-btn" data-tab="settings">설정</button>
+    </nav>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ======================= 작업실 ======================= -->
+    <section class="panel" id="panel-workspace">
+
+      <!-- 1. 원고 -->
+      <section class="step-view" data-step="1">
+        <div class="section-head">
+          <h2>1. 원고</h2>
+          <p>주제만 적고 Claude로 만들거나, 다른 AI에게 받은 원고를 붙여넣으세요.</p>
+        </div>
+
+        <div class="mode-switch" role="tablist" aria-label="원고 입력 방식">
+          <button type="button" class="mode-btn is-active" data-mode="free">무료 원고 붙여넣기</button>
+          <button type="button" class="mode-btn" data-mode="api">Claude API 자동 생성</button>
+        </div>
+
+        <div class="panel-block" id="pane-free">
+          <div class="row-split">
+            <button type="button" class="btn chip-btn" id="btn-preset-1">샘플 · AI 활용 팁</button>
+            <button type="button" class="btn chip-btn" id="btn-preset-2">샘플 · 일상·절약 체크리스트</button>
+          </div>
+
+          <label class="field">
+            <span class="field-label">원고 붙여넣기 <em>빈 줄로 슬라이드 구분 · 첫 줄은 소제목</em></span>
+            <textarea id="inp-paste" rows="9" spellcheck="false" placeholder="첫 장 제목을 여기에&#10;&#10;두 번째 장 소제목&#10;본문 내용을 여러 줄로 적습니다.&#10;- 도식 항목은 줄 앞에 - 를 붙입니다&#10;- 이렇게 두 번째 항목&#10;&#10;세 번째 장 소제목&#10;본문 내용...&#10;&#10;※ JSON을 붙여넣어도 자동으로 인식합니다."></textarea>
+          </label>
+
+          <div class="row-split">
+            <button type="button" class="btn btn-primary" id="btn-parse-text">카드로 만들기</button>
+            <button type="button" class="btn" id="btn-copy-prompt">클로드·포리용 프롬프트 복사</button>
+          </div>
+          <p class="hint" id="paste-status">API 키 없이 0원으로 시작할 수 있습니다.</p>
+        </div>
+
+        <div class="panel-block" id="pane-api" hidden>
+          <label class="field">
+            <span class="field-label">주제</span>
+            <input type="text" id="inp-topic" placeholder="예: 아침 루틴을 10분으로 줄이는 방법" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span class="field-label">참고 메모 <em>선택 · 넣고 싶은 내용, 말투, 대상 독자</em></span>
+            <textarea id="inp-memo" rows="4" placeholder="예: 30대 직장인 대상, 짧고 단호한 말투, 실천 항목 4개 포함"></textarea>
+          </label>
+          <div class="field">
+            <span class="field-label">모델</span>
+            <select id="sel-model">
+              <option value="claude-sonnet-4-5">claude-sonnet-4-5 (균형)</option>
+              <option value="claude-haiku-4-5">claude-haiku-4-5 (빠름·저렴)</option>
+              <option value="claude-opus-4-1">claude-opus-4-1 (정교)</option>
+              <option value="__custom__">직접 입력</option>
+            </select>
+            <input type="text" id="inp-model-custom" placeholder="모델 ID 직접 입력" autocomplete="off" hidden />
+          </div>
+          <button type="button" class="btn btn-primary btn-wide" id="btn-generate">Claude로 원고 만들기</button>
+          <p class="hint" id="gen-status">API 키는 설정 탭에서 저장합니다. 키는 이 브라우저 밖으로 나가지 않습니다.</p>
+        </div>
+
+        <div class="panel-block">
+          <label class="field">
+            <span class="field-label">프로젝트 이름</span>
+            <input type="text" id="inp-project-name" placeholder="예: 아침 루틴 카드뉴스" autocomplete="off" />
+          </label>
+          <div class="row-split">
+            <button type="button" class="btn" id="btn-new">새로 쓰기</button>
+            <button type="button" class="btn" id="btn-save-project">저장함에 저장</button>
+          </div>
+          <p class="hint" id="draft-summary">아직 원고가 없습니다.</p>
+        </div>
+      </section>
+
+      <!-- 2. 훅 고르기 -->
+      <section class="step-view" data-step="2" hidden>
+        <div class="section-head">
+          <h2>2. 훅 고르기</h2>
+          <p>마음에 드는 후킹을 누르면 표지 제목에 바로 들어갑니다. 문구는 직접 고쳐도 됩니다.</p>
+        </div>
+        <div id="hook-list" class="hook-list"></div>
+        <p class="hint" id="hook-status">훅을 누르면 01 표지가 바뀝니다.</p>
+      </section>
+
+      <!-- 3. 카드 편집 -->
+      <section class="step-view" data-step="3" hidden>
+        <div class="section-head">
+          <h2>3. 카드 편집</h2>
+          <p>1080×1350 고해상도 캔버스입니다. 양식과 강조색을 바꾸면 전체 카드에 적용됩니다.</p>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="card-canvas" width="1080" height="1350" aria-label="카드 미리보기"></canvas>
+        </div>
+
+        <div class="panel-block">
+          <div class="field">
+            <span class="field-label">양식</span>
+            <div class="chip-row" id="template-chips"></div>
+          </div>
+          <div class="field">
+            <span class="field-label">강조색</span>
+            <div class="swatch-row" id="accent-swatches"></div>
+          </div>
+        </div>
+
+        <div class="panel-block" id="card-fields"></div>
+
+        <div class="panel-block">
+          <div class="field-label">슬라이드 <em id="card-position">01 / 01</em></div>
+          <div class="thumb-strip" id="thumb-strip"></div>
+          <div class="row-split row-4">
+            <button type="button" class="btn btn-sm" id="btn-card-prev" title="앞으로 이동">◀</button>
+            <button type="button" class="btn btn-sm" id="btn-card-add">카드 추가</button>
+            <button type="button" class="btn btn-sm" id="btn-card-next" title="뒤로 이동">▶</button>
+            <button type="button" class="btn btn-sm btn-danger" id="btn-card-del">삭제</button>
+          </div>
+        </div>
+
+        <div class="panel-block">
+          <div class="field-label">인스타 캡션</div>
+          <textarea id="caption-text" rows="6" placeholder="캡션과 해시태그가 여기에 표시됩니다."></textarea>
+          <button type="button" class="btn btn-wide" id="btn-copy-caption">캡션 원클릭 복사</button>
+        </div>
+      </section>
+
+      <!-- 4. 저장·영상 -->
+      <section class="step-view" data-step="4" hidden>
+        <div class="section-head">
+          <h2>4. 저장 · 영상</h2>
+          <p>카드뉴스는 1080×1350 PNG로, 숏폼은 1080×1920 영상으로 저장합니다.</p>
+        </div>
+
+        <div class="panel-block">
+          <h3 class="block-title">카드뉴스 PNG 저장</h3>
+          <button type="button" class="btn btn-primary btn-wide" id="btn-png-current">현재 카드 PNG 저장</button>
+          <div class="row-split">
+            <button type="button" class="btn" id="btn-png-all">전체 카드 한 장씩</button>
+            <button type="button" class="btn" id="btn-png-zip">전체 ZIP 저장</button>
+          </div>
+          <p class="hint" id="png-status">1080×1350 · 인스타그램 4:5 규격</p>
+        </div>
+
+        <div class="panel-block">
+          <h3 class="block-title">9:16 숏폼 영상</h3>
+          <div class="field">
+            <span class="field-label">슬라이드당 노출 시간</span>
+            <div class="chip-row" id="dwell-options">
+              <button type="button" class="chip" data-dwell="2000">2초</button>
+              <button type="button" class="chip is-active" data-dwell="3000">3초</button>
+              <button type="button" class="chip" data-dwell="4000">4초</button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label">전환 효과</span>
+            <select id="sel-transition">
+              <option value="fade">부드러운 페이드</option>
+              <option value="slide">슬라이드</option>
+              <option value="none">없음</option>
+            </select>
+          </div>
+          <div class="field">
+            <span class="field-label">배경음악 <em>선택 · 끝에서 자동 페이드아웃</em></span>
+            <div class="row-split">
+              <label class="btn btn-file">
+                음악 파일 선택
+                <input type="file" id="inp-bgm" accept="audio/*" hidden />
+              </label>
+              <button type="button" class="btn btn-sm" id="btn-bgm-remove">음악 제거</button>
+            </div>
+            <p class="hint" id="bgm-name">선택 안 함 · 무음으로 내보냅니다.</p>
+          </div>
+
+          <div class="video-frame">
+            <canvas id="video-preview-canvas" width="540" height="960" aria-label="숏폼 미리보기"></canvas>
+          </div>
+          <p class="hint" id="video-duration">총 길이 0초</p>
+          <div class="row-split">
+            <button type="button" class="btn" id="btn-video-preview">미리보기 재생</button>
+            <button type="button" class="btn btn-primary" id="btn-video-export">영상 만들기</button>
+          </div>
+          <div class="progress" id="video-progress" hidden><span></span></div>
+          <p class="hint" id="video-status"></p>
+          <p class="hint" id="video-format"></p>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- ======================= 저장함 ======================= -->
+    <section class="panel" id="panel-storage" hidden>
+      <div class="section-head">
+        <h2>저장함</h2>
+        <p>이 브라우저(localStorage)에 저장된 프로젝트입니다.</p>
+      </div>
+      <div id="storage-list" class="storage-list"></div>
+      <p class="hint" id="storage-empty">저장된 프로젝트가 없습니다. 작업실 1단계에서 저장해 보세요.</p>
+    </section>
+
+    <!-- ======================= 설정 ======================= -->
+    <section class="panel" id="panel-settings" hidden>
+      <div class="section-head">
+        <h2>설정</h2>
+        <p>브랜드 기본값과 API 키를 관리합니다.</p>
+      </div>
+
+      <div class="panel-block">
+        <h3 class="block-title">Claude API 키</h3>
+        <div class="field">
+          <span class="field-label">API 키 <em>이 기기에만 저장 · 서버 전송 없음</em></span>
+          <div class="row-split">
+            <input type="password" id="inp-api-key" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" />
+            <button type="button" class="btn btn-sm" id="btn-key-toggle">보기</button>
+          </div>
+        </div>
+        <div class="row-split">
+          <button type="button" class="btn" id="btn-key-save">키 저장</button>
+          <button type="button" class="btn" id="btn-key-test">테스트 호출</button>
+        </div>
+        <p class="hint" id="key-status">키를 넣으면 1단계에서 원고를 자동 생성할 수 있습니다.</p>
+        <p class="hint warn">공용 기기에서는 키를 저장하지 마세요. 브라우저에서 직접 호출하는 방식이라 키를 아는 사람은 그대로 사용할 수 있습니다.</p>
+      </div>
+
+      <div class="panel-block">
+        <h3 class="block-title">브랜드 기본값</h3>
+        <label class="field">
+          <span class="field-label">기본 핸들</span>
+          <input type="text" id="inp-default-handle" placeholder="@royfafa2023" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label">서브타이틀</span>
+          <input type="text" id="inp-default-subtitle" placeholder="로이파파의 AI·생활 기록" autocomplete="off" />
+        </label>
+        <div class="field">
+          <span class="field-label">기본 양식</span>
+          <select id="sel-default-template">
+            <option value="photo">사진형</option>
+            <option value="infographic">설명 도식형</option>
+            <option value="text">글 중심형</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">기본 강조색</span>
+          <div class="swatch-row" id="settings-accents"></div>
+        </div>
+        <button type="button" class="btn btn-primary btn-wide" id="btn-settings-save">기본값 저장</button>
+        <p class="hint" id="settings-status"></p>
+      </div>
+
+      <div class="panel-block">
+        <h3 class="block-title">데이터</h3>
+        <button type="button" class="btn btn-danger btn-wide" id="btn-reset-data">저장된 프로젝트·키 모두 삭제</button>
+        <p class="hint">이 브라우저에만 있는 데이터입니다. 삭제하면 되돌릴 수 없습니다.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="stepbar" id="stepbar" aria-label="제작 단계">
+    <button type="button" class="step-btn is-active" data-step="1"><b>1</b><span>원고</span></button>
+    <button type="button" class="step-btn" data-step="2"><b>2</b><span>훅 고르기</span></button>
+    <button type="button" class="step-btn" data-step="3"><b>3</b><span>카드 편집</span></button>
+    <button type="button" class="step-btn" data-step="4"><b>4</b><span>저장·영상</span></button>
+  </nav>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog class="dialog" id="dialog">
+    <form method="dialog" class="dialog-inner">
+      <strong id="dialog-title">확인</strong>
+      <p id="dialog-body"></p>
+      <div class="row-split">
+        <button type="submit" class="btn" value="cancel" id="dialog-cancel">취소</button>
+        <button type="submit" class="btn btn-primary" value="ok" id="dialog-ok">확인</button>
+      </div>
+    </form>
+  </dialog>
+
+</div>
+
+<noscript>이 도구는 JavaScript가 필요합니다. 브라우저에서 JavaScript를 켜 주세요.</noscript>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>
