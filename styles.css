@@ -292,6 +292,22 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 .hook-card.is-applied { border-color: var(--accent); background: rgba(82, 229, 183, 0.06); }
 
 .hook-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+.hook-right { display: flex; align-items: center; gap: 8px; }
+.hook-edit {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--muted);
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.hook-text { display: flex; flex-direction: column; gap: 3px; }
+.hook-line1 { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+.hook-line2 { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
 .hook-tag {
   font-size: 11px;
   font-weight: 800;

@@ -348,8 +348,9 @@
     return fit.lines.length * fit.lh;
   }
 
-  function drawLines(ctx, lines, x, y, lh, color, align, width) {
+  function drawLines(ctx, lines, x, y, lh, color, align, width, size, weight) {
     ctx.save();
+    if (size) setFont(ctx, size, weight || 700);
     ctx.fillStyle = color;
     ctx.textAlign = align || 'left';
     ctx.textBaseline = 'top';
@@ -386,7 +387,7 @@
     const height = lines.length * fit.lh;
     let y = o.y;
     if (o.valign === 'center' && o.maxHeight) y = o.y + Math.max(0, (o.maxHeight - height) / 2);
-    drawLines(ctx, lines, o.x, y, fit.lh, o.color || '#F2F7F4', o.align, o.width);
+    drawLines(ctx, lines, o.x, y, fit.lh, o.color || '#F2F7F4', o.align, o.width, fit.size, o.weight || 500);
     return { height: height, size: fit.size };
   }
 
@@ -533,14 +534,14 @@
     roundRect(ctx, x, y - 46, 72, 7, 3.5);
     ctx.fill();
 
-    drawLines(ctx, lines1, x, y, lh, '#F4F8F5', 'left', titleW);
+    drawLines(ctx, lines1, x, y, lh, '#F4F8F5', 'left', titleW, size, 800);
     if (h2) {
       y += h1 + 16;
-      drawLines(ctx, lines2, x, y, lh, accent, 'left', titleW);
+      drawLines(ctx, lines2, x, y, lh, accent, 'left', titleW, size, 800);
     }
 
     if (subFit) {
-      drawLines(ctx, subFit.lines, x, titleBottom + 26, subFit.lh, 'rgba(255,255,255,0.6)', 'left', titleW);
+      drawLines(ctx, subFit.lines, x, titleBottom + 26, subFit.lh, 'rgba(255,255,255,0.6)', 'left', titleW, subFit.size, 600);
     }
 
     drawFooter(ctx, idx, total, proj);
@@ -581,27 +582,28 @@
 
     const img = card.photo && card.photo.src ? getImage(card.photo.src) : null;
     if (img) {
-      drawCoverImage(ctx, img, 0, 0, CARD_W, photoH + 180, card.photo.focus, card.photo.brightness);
+      drawCoverImage(ctx, img, 0, 0, CARD_W, photoH + 70, card.photo.focus, card.photo.brightness);
     } else {
-      drawPhotoPlaceholder(ctx, accent, photoH + 120);
+      drawPhotoPlaceholder(ctx, accent, photoH + 70);
     }
 
-    const fade = ctx.createLinearGradient(0, photoH - 240, 0, photoH + 150);
+    const fade = ctx.createLinearGradient(0, photoH - 170, 0, photoH + 70);
     fade.addColorStop(0, 'rgba(7,10,9,0)');
+    fade.addColorStop(0.55, 'rgba(7,10,9,0.72)');
     fade.addColorStop(1, '#070A09');
     ctx.fillStyle = fade;
-    ctx.fillRect(0, photoH - 240, CARD_W, 390);
+    ctx.fillRect(0, photoH - 170, CARD_W, 240);
 
     const x = 84;
     const w = 912;
-    let y = photoH + 96;
+    let y = photoH + 190;
 
     if (card.subtitle) {
       ctx.fillStyle = accent;
       roundRect(ctx, x, y - 32, 44, 6, 3);
       ctx.fill();
       const sub = fitLines(ctx, card.subtitle, w, 40, 28, 800, 1.3, 2);
-      drawLines(ctx, sub.lines, x, y, sub.lh, accent, 'left', w);
+      drawLines(ctx, sub.lines, x, y, sub.lh, accent, 'left', w, sub.size, 800);
       y += linesHeight(sub) + 30;
     }
 
@@ -662,7 +664,7 @@
     if (card.subtitle) {
       const sub = fitLines(ctx, card.subtitle, w - 30, 50, 32, 800, 1.28, 2);
       let sy = y + 34;
-      drawLines(ctx, sub.lines, x + 30, sy, sub.lh, '#F3F8F5', 'left', w - 30);
+      drawLines(ctx, sub.lines, x + 30, sy, sub.lh, '#F3F8F5', 'left', w - 30, sub.size, 800);
       y = sy + linesHeight(sub) + 34;
     } else {
       y += 90;
@@ -683,8 +685,10 @@
       const gap = 16;
       const available = bottom - y;
       const rowH = clamp((available - gap * (items.length - 1)) / items.length, 84, 176);
+      const blockH = items.length * rowH + gap * (items.length - 1);
+      const startY = y + Math.max(0, (available - blockH) / 2);
       for (let i = 0; i < items.length; i++) {
-        const ry = y + i * (rowH + gap);
+        const ry = startY + i * (rowH + gap);
         ctx.save();
         ctx.fillStyle = 'rgba(255,255,255,0.035)';
         roundRect(ctx, x, ry, w, rowH, 22);
@@ -716,12 +720,12 @@
         const tSize = clamp(rowH * 0.3, 30, 44);
         const fit = fitLines(ctx, items[i], tw, tSize, 26, 600, 1.32, 2);
         const ty = cy - linesHeight(fit) / 2;
-        drawLines(ctx, fit.lines, tx, ty, fit.lh, '#EEF5F1', 'left', tw);
+        drawLines(ctx, fit.lines, tx, ty, fit.lh, '#EEF5F1', 'left', tw, fit.size, 600);
       }
       y += items.length * (rowH + gap);
     } else if (!card.body) {
       const fit = fitLines(ctx, card.subtitle || '내용을 입력해 주세요', w, 60, 36, 700, 1.4, 4);
-      drawLines(ctx, fit.lines, x, CARD_H / 2, fit.lh, 'rgba(255,255,255,0.4)', 'left', w);
+      drawLines(ctx, fit.lines, x, CARD_H / 2, fit.lh, 'rgba(255,255,255,0.4)', 'left', w, fit.size, 700);
     }
 
     drawFooter(ctx, idx, total, proj);
@@ -749,7 +753,7 @@
     y += 40;
     if (card.subtitle) {
       const sub = fitLines(ctx, card.subtitle, w, 42, 30, 800, 1.3, 2);
-      drawLines(ctx, sub.lines, x, y, sub.lh, accent, 'left', w);
+      drawLines(ctx, sub.lines, x, y, sub.lh, accent, 'left', w, sub.size, 800);
       y += linesHeight(sub) + 46;
     }
 
@@ -809,17 +813,17 @@
 
     if (card.subtitle) {
       const sub = fitLines(ctx, card.subtitle, w, 32, 22, 600, 1.35, 1);
-      drawLines(ctx, sub.lines, x, 372, sub.lh, 'rgba(255,255,255,0.5)', 'center', w);
+      drawLines(ctx, sub.lines, x, 372, sub.lh, 'rgba(255,255,255,0.5)', 'center', w, sub.size, 600);
     }
 
     const body = card.body || '저장하고 천천히 다시 보세요';
     const fit = fitLines(ctx, body, w, 80, 46, 900, 1.28, 3);
     const bodyTop = CARD_H * 0.5 - linesHeight(fit) / 2;
-    drawLines(ctx, fit.lines, x, bodyTop, fit.lh, '#F6FBF8', 'center', w);
+    drawLines(ctx, fit.lines, x, bodyTop, fit.lh, '#F6FBF8', 'center', w, fit.size, 900);
 
     ctx.save();
     const handleFit = fitLines(ctx, proj.design.handle || '@royfafa2023', 900, 62, 30, 800, 1.2, 1);
-    drawLines(ctx, handleFit.lines, (CARD_W - 900) / 2, CARD_H - 320 - handleFit.lh + 12, handleFit.lh, accent, 'center', 900);
+    drawLines(ctx, handleFit.lines, (CARD_W - 900) / 2, CARD_H - 320 - handleFit.lh + 12, handleFit.lh, accent, 'center', 900, handleFit.size, 800);
     setFont(ctx, 28, 600);
     ctx.fillStyle = 'rgba(255,255,255,0.42)';
     ctx.textAlign = 'center';
@@ -827,7 +831,13 @@
     ctx.fillText('팔로우하고 저장해 두세요', CARD_W / 2, CARD_H - 258);
     ctx.restore();
 
-    drawFooter(ctx, idx, total, proj);
+    ctx.save();
+    setFont(ctx, 27, 600);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(pad2(idx + 1) + ' / ' + pad2(total), CARD_W - 84, CARD_H - 48);
+    ctx.restore();
   }
 
   function drawCard(ctx, card, idx, proj) {
@@ -1506,20 +1516,41 @@
       card.className = 'hook-card' + (applied ? ' is-applied' : '');
       card.setAttribute('role', 'button');
       card.tabIndex = 0;
+      card.setAttribute('aria-label', (i + 1) + '. ' + h.type + ' 후킹을 표지에 적용');
 
       const top = document.createElement('div');
       top.className = 'hook-top';
       const tag = document.createElement('span');
       tag.className = 'hook-tag';
       tag.textContent = (i + 1) + '. ' + h.type;
+      const right = document.createElement('span');
+      right.className = 'hook-right';
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'hook-edit';
+      editBtn.textContent = '문구 수정';
       const applyHint = document.createElement('span');
       applyHint.className = 'hook-apply';
-      applyHint.textContent = applied ? '✓ 표지에 적용됨' : '눌러서 표지에 적용';
+      applyHint.textContent = applied ? '✓ 표지에 적용됨' : '눌러서 적용';
+      right.appendChild(editBtn);
+      right.appendChild(applyHint);
       top.appendChild(tag);
-      top.appendChild(applyHint);
+      top.appendChild(right);
 
-      const lines = document.createElement('div');
-      lines.className = 'hook-lines';
+      const preview = document.createElement('div');
+      preview.className = 'hook-text';
+      const l1 = document.createElement('div');
+      l1.className = 'hook-line1';
+      l1.textContent = h.line1 || '(첫째 줄 비어 있음)';
+      const l2 = document.createElement('div');
+      l2.className = 'hook-line2';
+      l2.textContent = h.line2 || '(둘째 줄 비어 있음)';
+      preview.appendChild(l1);
+      preview.appendChild(l2);
+
+      const editor = document.createElement('div');
+      editor.className = 'hook-lines';
+      editor.hidden = true;
       const in1 = document.createElement('input');
       in1.type = 'text';
       in1.value = h.line1;
@@ -1531,28 +1562,48 @@
       in2.placeholder = '강조 둘째 줄';
       in2.setAttribute('aria-label', h.type + ' 둘째 줄');
 
+      function syncText() {
+        l1.textContent = h.line1 || '(첫째 줄 비어 있음)';
+        l2.textContent = h.line2 || '(둘째 줄 비어 있음)';
+      }
+
       function onChange() {
         h.line1 = in1.value;
         h.line2 = in2.value;
         const cv = state.project.cards[0];
-        const isAppliedNow = cv.title1 === h.line1 && cv.title2 === h.line2;
-        if (isAppliedNow || card.classList.contains('is-applied')) {
+        if (card.classList.contains('is-applied')) {
           cv.title1 = h.line1;
           cv.title2 = h.line2;
         }
+        syncText();
         touch();
         scheduleDraw();
         renderStep1();
       }
       in1.addEventListener('input', onChange);
       in2.addEventListener('input', onChange);
-      in1.addEventListener('click', (e) => e.stopPropagation());
-      in2.addEventListener('click', (e) => e.stopPropagation());
+      [in1, in2].forEach((el) => {
+        el.addEventListener('click', (e) => e.stopPropagation());
+        el.addEventListener('keydown', (e) => e.stopPropagation());
+      });
 
-      lines.appendChild(in1);
-      lines.appendChild(in2);
+      editBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editor.hidden = !editor.hidden;
+        preview.hidden = !editor.hidden;
+        editBtn.textContent = editor.hidden ? '문구 수정' : '수정 닫기';
+        if (!editor.hidden) {
+          in1.value = h.line1;
+          in2.value = h.line2;
+          in1.focus();
+        }
+      });
+
+      editor.appendChild(in1);
+      editor.appendChild(in2);
       card.appendChild(top);
-      card.appendChild(lines);
+      card.appendChild(preview);
+      card.appendChild(editor);
 
       card.addEventListener('click', () => applyHook(h.id));
       card.addEventListener('keydown', (e) => {
@@ -2327,7 +2378,6 @@
   function drawVideoFrame(ctx, cardCanvases, t, proj) {
     const timing = videoTimings();
     const n = timing.n;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, VID_W, VID_H);
     drawVideoBackdrop(ctx, proj);
 
@@ -2476,16 +2526,19 @@
       /* ignore */
     }
 
+    let stopped = false;
     return {
       stream: dest.stream,
       stop: function () {
+        if (stopped) return;
+        stopped = true;
         try {
           src.stop();
         } catch (e) {
           /* ignore */
         }
         try {
-          ctx.close();
+          if (ctx.state !== 'closed') ctx.close();
         } catch (e) {
           /* ignore */
         }
