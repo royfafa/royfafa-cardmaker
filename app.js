@@ -3192,6 +3192,18 @@
       });
     }
 
+    // 3단계 미리보기 : 크게 보기 / 작게 보기
+    const previewDock = $('#preview-dock');
+    const previewToggle = $('#btn-preview-toggle');
+    if (previewDock && previewToggle) {
+      previewToggle.addEventListener('click', () => {
+        const large = previewDock.classList.toggle('is-large');
+        previewToggle.setAttribute('aria-pressed', large ? 'true' : 'false');
+        const label = previewToggle.querySelector('span');
+        if (label) label.textContent = large ? '작게 보기' : '크게 보기';
+      });
+    }
+
     // 설정 탭 강조색 즉시 반영
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -3235,6 +3247,20 @@
   /* ============================================================
      시작
      ============================================================ */
+  function syncChrome() {
+    // 헤더 실제 높이를 CSS 변수로 넘겨 스티키 오프셋을 맞춘다
+    const header = document.querySelector('.app-header');
+    if (header) {
+      const h = Math.round(header.getBoundingClientRect().height);
+      if (h > 0) document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+    const bar = document.querySelector('.stepbar');
+    if (bar && !bar.hidden) {
+      const bh = Math.round(bar.getBoundingClientRect().height);
+      if (bh > 0) document.documentElement.style.setProperty('--stepbar-h', bh + 'px');
+    }
+  }
+
   function init() {
     state.settings = Object.assign(defaultSettings(), loadJSON(LS.settings, {}));
     try {
@@ -3258,6 +3284,10 @@
     renderSettings();
     renderStorage();
     renderExportPanel();
+    syncChrome();
+
+    window.addEventListener('resize', syncChrome);
+    window.addEventListener('orientationchange', () => setTimeout(syncChrome, 120));
 
     ensureFonts().then(() => {
       drawPreview();

@@ -25,10 +25,7 @@
   <header class="app-header">
     <div class="brand">
       <span class="brand-mark" aria-hidden="true">ㄹ</span>
-      <span class="brand-text">
-        <strong>로이파파 카드메이커</strong>
-        <small>카드뉴스 · 숏폼 스튜디오</small>
-      </span>
+      <span class="brand-text"><strong>로이파파 카드메이커</strong></span>
     </div>
     <nav class="top-tabs" aria-label="화면 전환">
       <button type="button" class="tab-btn is-active" data-tab="workspace">작업실</button>
@@ -51,13 +48,16 @@
 
         <div class="panel-block">
           <label class="field">
-            <span class="field-label">주제 <em>두 모드 공통 · 프롬프트 복사에도 사용</em></span>
+            <span class="field-label">주제 <em>두 모드 공통</em></span>
             <input type="text" id="inp-topic" placeholder="예: 아침 루틴을 10분으로 줄이는 방법" autocomplete="off" />
           </label>
-          <label class="field">
-            <span class="field-label">참고 메모 <em>선택 · 넣고 싶은 내용, 말투, 대상 독자</em></span>
-            <textarea id="inp-memo" rows="3" placeholder="예: 30대 직장인 대상, 짧고 단호한 말투, 실천 항목 4개 포함"></textarea>
-          </label>
+
+          <details class="fold fold-inline">
+            <summary><span>참고 메모</span><em>선택 · 말투·대상 독자</em></summary>
+            <div class="fold-body">
+              <textarea id="inp-memo" rows="3" placeholder="예: 30대 직장인 대상, 짧고 단호한 말투, 실천 항목 4개 포함"></textarea>
+            </div>
+          </details>
         </div>
 
         <div class="mode-switch" role="tablist" aria-label="원고 입력 방식">
@@ -65,22 +65,24 @@
           <button type="button" class="mode-btn" data-mode="api">Claude API 자동 생성</button>
         </div>
 
-        <div class="panel-block" id="pane-free">
-          <div class="row-split">
-            <button type="button" class="btn chip-btn" id="btn-preset-1">샘플 · AI 활용 팁</button>
-            <button type="button" class="btn chip-btn" id="btn-preset-2">샘플 · 일상·절약 체크리스트</button>
-          </div>
+        <div id="pane-free">
+          <div class="panel-block">
+            <div class="row-split">
+              <button type="button" class="btn chip-btn" id="btn-preset-1">샘플·AI 팁</button>
+              <button type="button" class="btn chip-btn" id="btn-preset-2">샘플·체크리스트</button>
+            </div>
 
-          <label class="field">
-            <span class="field-label">원고 붙여넣기 <em>빈 줄로 슬라이드 구분 · 첫 줄은 소제목</em></span>
-            <textarea id="inp-paste" rows="9" spellcheck="false" placeholder="첫 장 제목을 여기에&#10;&#10;두 번째 장 소제목&#10;본문 내용을 여러 줄로 적습니다.&#10;- 도식 항목은 줄 앞에 - 를 붙입니다&#10;- 이렇게 두 번째 항목&#10;&#10;세 번째 장 소제목&#10;본문 내용...&#10;&#10;※ JSON을 붙여넣어도 자동으로 인식합니다."></textarea>
-          </label>
+            <label class="field field-gap">
+              <span class="field-label">원고 붙여넣기 <em>빈 줄로 장 구분</em></span>
+              <textarea id="inp-paste" rows="5" spellcheck="false" placeholder="첫 장 제목을 여기에&#10;&#10;두 번째 장 소제목&#10;본문 내용을 여러 줄로 적습니다.&#10;- 도식 항목은 줄 앞에 - 를 붙입니다&#10;&#10;※ JSON을 붙여넣어도 자동으로 인식합니다."></textarea>
+            </label>
 
-          <div class="row-split">
-            <button type="button" class="btn btn-primary" id="btn-parse-text">카드로 만들기</button>
-            <button type="button" class="btn" id="btn-copy-prompt">클로드·포리용 프롬프트 복사</button>
+            <div class="row-split">
+              <button type="button" class="btn btn-primary" id="btn-parse-text">카드로 만들기</button>
+              <button type="button" class="btn" id="btn-copy-prompt">프롬프트 복사</button>
+            </div>
+            <p class="hint" id="paste-status">API 키 없이 0원으로 시작할 수 있습니다.</p>
           </div>
-          <p class="hint" id="paste-status">API 키 없이 0원으로 시작할 수 있습니다.</p>
         </div>
 
         <div class="panel-block" id="pane-api" hidden>
@@ -98,17 +100,20 @@
           <p class="hint" id="gen-status">API 키는 설정 탭에서 저장합니다. 키는 이 브라우저 밖으로 나가지 않습니다.</p>
         </div>
 
-        <div class="panel-block">
-          <label class="field">
-            <span class="field-label">프로젝트 이름</span>
-            <input type="text" id="inp-project-name" placeholder="예: 아침 루틴 카드뉴스" autocomplete="off" />
-          </label>
-          <div class="row-split">
-            <button type="button" class="btn" id="btn-new">새로 쓰기</button>
-            <button type="button" class="btn" id="btn-save-project">저장함에 저장</button>
+        <details class="panel-block fold">
+          <summary><span>프로젝트 저장</span><em>이름·저장함·새로 쓰기</em></summary>
+          <div class="fold-body">
+            <label class="field">
+              <span class="field-label">프로젝트 이름</span>
+              <input type="text" id="inp-project-name" placeholder="예: 아침 루틴 카드뉴스" autocomplete="off" />
+            </label>
+            <div class="row-split">
+              <button type="button" class="btn" id="btn-new">새로 쓰기</button>
+              <button type="button" class="btn" id="btn-save-project">저장함에 저장</button>
+            </div>
+            <p class="hint" id="draft-summary">아직 원고가 없습니다.</p>
           </div>
-          <p class="hint" id="draft-summary">아직 원고가 없습니다.</p>
-        </div>
+        </details>
       </section>
 
       <!-- 2. 훅 고르기 -->
@@ -123,13 +128,28 @@
 
       <!-- 3. 카드 편집 -->
       <section class="step-view" data-step="3" hidden>
-        <div class="section-head">
+        <div class="section-head section-head-tight">
           <h2>3. 카드 편집</h2>
-          <p>1080×1350 고해상도 캔버스입니다. 양식과 강조색을 바꾸면 전체 카드에 적용됩니다.</p>
         </div>
 
-        <div class="canvas-wrap">
-          <canvas id="card-canvas" width="1080" height="1350" aria-label="카드 미리보기"></canvas>
+        <div class="preview-dock" id="preview-dock">
+          <div class="canvas-wrap">
+            <canvas id="card-canvas" width="1080" height="1350" aria-label="카드 미리보기"></canvas>
+          </div>
+          <div class="dock-bar">
+            <span class="dock-pos" id="card-position">01 / 01</span>
+            <button type="button" class="preview-toggle" id="btn-preview-toggle" aria-pressed="false"><span>크게 보기</span></button>
+          </div>
+          <div class="thumb-strip" id="thumb-strip"></div>
+        </div>
+
+        <div class="panel-block panel-slim">
+          <div class="row-split row-4">
+            <button type="button" class="btn btn-sm" id="btn-card-prev" title="앞 카드로">◀</button>
+            <button type="button" class="btn btn-sm btn-primary" id="btn-card-add">카드 추가</button>
+            <button type="button" class="btn btn-sm" id="btn-card-next" title="뒤 카드로">▶</button>
+            <button type="button" class="btn btn-sm btn-danger" id="btn-card-del">삭제</button>
+          </div>
         </div>
 
         <div class="panel-block">
@@ -146,19 +166,8 @@
         <div class="panel-block" id="card-fields"></div>
 
         <div class="panel-block">
-          <div class="field-label">슬라이드 <em id="card-position">01 / 01</em></div>
-          <div class="thumb-strip" id="thumb-strip"></div>
-          <div class="row-split row-4">
-            <button type="button" class="btn btn-sm" id="btn-card-prev" title="앞으로 이동">◀</button>
-            <button type="button" class="btn btn-sm" id="btn-card-add">카드 추가</button>
-            <button type="button" class="btn btn-sm" id="btn-card-next" title="뒤로 이동">▶</button>
-            <button type="button" class="btn btn-sm btn-danger" id="btn-card-del">삭제</button>
-          </div>
-        </div>
-
-        <div class="panel-block">
           <div class="field-label">인스타 캡션</div>
-          <textarea id="caption-text" rows="6" placeholder="캡션과 해시태그가 여기에 표시됩니다."></textarea>
+          <textarea id="caption-text" rows="5" placeholder="캡션과 해시태그가 여기에 표시됩니다."></textarea>
           <button type="button" class="btn btn-wide" id="btn-copy-caption">캡션 원클릭 복사</button>
         </div>
       </section>
@@ -167,14 +176,14 @@
       <section class="step-view" data-step="4" hidden>
         <div class="section-head">
           <h2>4. 저장 · 영상</h2>
-          <p>카드뉴스는 1080×1350 PNG로, 숏폼은 1080×1920 영상으로 저장합니다.</p>
+          <p>카드뉴스는 1080×1350 PNG, 숏폼은 1080×1920 영상으로 저장합니다.</p>
         </div>
 
         <div class="panel-block">
           <h3 class="block-title">카드뉴스 PNG 저장</h3>
           <button type="button" class="btn btn-primary btn-wide" id="btn-png-current">현재 카드 PNG 저장</button>
           <div class="row-split">
-            <button type="button" class="btn" id="btn-png-all">전체 카드 한 장씩</button>
+            <button type="button" class="btn" id="btn-png-all">전체 한 장씩</button>
             <button type="button" class="btn" id="btn-png-zip">전체 ZIP 저장</button>
           </div>
           <p class="hint" id="png-status">1080×1350 · 인스타그램 4:5 규격</p>
