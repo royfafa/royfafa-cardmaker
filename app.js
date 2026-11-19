@@ -3156,6 +3156,7 @@
           state.project.design.handle = state.settings.handle;
           state.project.design.subtitle = state.settings.subtitle;
           state.project.design.template = state.settings.template;
+          state.project.design.accent = state.settings.accent;
           touch();
         }
         refreshAllUI();
