@@ -3192,15 +3192,22 @@
       });
     }
 
-    // 3단계 미리보기 : 크게 보기 / 작게 보기
+    // 3단계 미리보기 : 크게 보기 / 접기
     const previewDock = $('#preview-dock');
-    const previewToggle = $('#btn-preview-toggle');
-    if (previewDock && previewToggle) {
-      previewToggle.addEventListener('click', () => {
+    const sizeBtn = $('#btn-preview-size');
+    const foldBtn = $('#btn-preview-fold');
+    if (previewDock && sizeBtn) {
+      sizeBtn.addEventListener('click', () => {
         const large = previewDock.classList.toggle('is-large');
-        previewToggle.setAttribute('aria-pressed', large ? 'true' : 'false');
-        const label = previewToggle.querySelector('span');
-        if (label) label.textContent = large ? '작게 보기' : '크게 보기';
+        sizeBtn.setAttribute('aria-pressed', large ? 'true' : 'false');
+        sizeBtn.textContent = large ? '작게' : '크게';
+      });
+    }
+    if (previewDock && foldBtn) {
+      foldBtn.addEventListener('click', () => {
+        const folded = previewDock.classList.toggle('is-folded');
+        foldBtn.setAttribute('aria-pressed', folded ? 'true' : 'false');
+        foldBtn.textContent = folded ? '펼치기' : '접기';
       });
     }
 

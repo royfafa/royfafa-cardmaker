@@ -377,6 +377,9 @@ select {
 }
 
 .preview-dock.is-large { --preview-h: 56vh; }
+.preview-dock.is-folded .canvas-wrap,
+.preview-dock.is-folded .thumb-strip { display: none; }
+.preview-dock.is-folded .dock-bar { margin-top: 2px; }
 
 .dock-bar {
   display: flex;
@@ -385,6 +388,7 @@ select {
   gap: 8px;
   margin-top: 6px;
 }
+.dock-tools { display: flex; gap: 5px; }
 .dock-pos {
   font-size: 11.5px;
   font-weight: 800;

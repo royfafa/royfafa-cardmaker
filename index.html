@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" />
-<link rel="stylesheet" href="styles.css?v=20261120" />
+<link rel="stylesheet" href="styles.css?v=20261120b" />
 </head>
 <body>
 <div class="app" id="app">
@@ -138,7 +138,10 @@
           </div>
           <div class="dock-bar">
             <span class="dock-pos" id="card-position">01 / 01</span>
-            <button type="button" class="preview-toggle" id="btn-preview-toggle" aria-pressed="false"><span>크게 보기</span></button>
+            <div class="dock-tools">
+              <button type="button" class="preview-toggle" id="btn-preview-size" aria-pressed="false">크게</button>
+              <button type="button" class="preview-toggle" id="btn-preview-fold" aria-pressed="false">접기</button>
+            </div>
           </div>
           <div class="thumb-strip" id="thumb-strip"></div>
         </div>
@@ -329,6 +332,6 @@
 <noscript>이 도구는 JavaScript가 필요합니다. 브라우저에서 JavaScript를 켜 주세요.</noscript>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
-<script src="app.js?v=20261120" defer></script>
+<script src="app.js?v=20261120b" defer></script>
 </body>
 </html>
